@@ -14,38 +14,28 @@ const photos = { 1: null, 2: null }; // ImageBitmap after loading
    _s = shifted up 15pp when poem is shown (not used for frame 3).     */
 const FRAMES = {
   1: {
-    // Dark red — w = 12.6%, h = 22.41%
     w: 12.6,
-    photos1:   [{ l: 43.7, t: 38.8 }],
-    photos2:   [{ l: 43.7, t: 27.6 }, { l: 43.7, t: 50.01 }],
-    photos1_s: [{ l: 43.7, t: 23.8 }],
-    photos2_s: [{ l: 43.7, t: 12.6 }, { l: 43.7, t: 35.01 }],
-    poem_s: { l: 20, t: 62, w: 60, align: 'center' }
+    photos1: [{ l: 43.7 }],
+    photos2: [{ l: 43.7 }, { l: 43.7 }],
+    poem: { l: 20, t: 65, w: 60, align: 'center' }
   },
   2: {
-    // Plaid / doily — 25% smaller total (w = 14.8 * 0.75 = 11.1%), h = 19.74%
     w: 11.1,
-    photos1:   [{ l: 44.45, t: 40.1 }],
-    photos2:   [{ l: 44.45, t: 30.2 }, { l: 44.45, t: 49.94 }],
-    photos1_s: [{ l: 44.45, t: 25.2 }],
-    photos2_s: [{ l: 44.45, t: 15.2 }, { l: 44.45, t: 34.94 }],
-    poem_s: { l: 18, t: 66, w: 64, align: 'center' }
+    photos1: [{ l: 44.45 }],
+    photos2: [{ l: 44.45 }, { l: 44.45 }],
+    poem: { l: 18, t: 68, w: 64, align: 'center' }
   },
   3: {
-    // Pink stripe — w = 14.2%, h = 25.26% — photos never shift
     w: 14.2,
-    photos1:   [{ l: 42.9, t: 37.4 }],
-    photos2:   [{ l: 42.9, t: 24.7 }, { l: 42.9, t: 49.96 }],
-    poem_s: { l: 20, t: 80, w: 60, align: 'center' }
+    photos1: [{ l: 42.9 }],
+    photos2: [{ l: 42.9 }, { l: 42.9 }],
+    poem: { l: 20, t: 80, w: 60, align: 'center' }
   },
   4: {
-    // Green polka dot — w = 14.2%, h = 25.26%
     w: 14.2,
-    photos1:   [{ l: 42.9, t: 37.4 }],
-    photos2:   [{ l: 42.9, t: 24.7 }, { l: 42.9, t: 49.96 }],
-    photos1_s: [{ l: 42.9, t: 22.4 }],
-    photos2_s: [{ l: 42.9, t:  9.7 }, { l: 42.9, t: 34.96 }],
-    poem_s: { l: 20, t: 65, w: 60, align: 'center' }
+    photos1: [{ l: 42.9 }],
+    photos2: [{ l: 42.9 }, { l: 42.9 }],
+    poem: { l: 20, t: 68, w: 60, align: 'center' }
   }
 };
 
@@ -169,20 +159,18 @@ async function createFrame() {
 }
 
 /* ── Position photos helper ────────────────────────────────────── */
-function positionPhotos(f, positions, canvases) {
+function positionPhotos(f, tops, canvases) {
   const layout = FRAMES[f];
-  // Height computed precisely so stacked photos have zero gap
   const hPct = (layout.w * 1366 / 768).toFixed(3);
+  const lValues = canvases.length >= 2 ? layout.photos2 : layout.photos1;
 
   canvases.forEach((src, i) => {
-    const pos = positions[i];
-    if (!pos) return;
     const dest = document.getElementById(`photo-${i === 0 ? 'a' : 'b'}-${f}`);
     dest.width  = src.width;
     dest.height = src.height;
     dest.getContext('2d').drawImage(src, 0, 0);
-    dest.style.left   = pos.l + '%';
-    dest.style.top    = pos.t + '%';
+    dest.style.left   = lValues[i].l + '%';
+    dest.style.top    = tops[i] + '%';
     dest.style.width  = layout.w + '%';
     dest.style.height = hPct + '%';
     dest.style.display = 'block';
@@ -193,27 +181,49 @@ function positionPhotos(f, positions, canvases) {
   }
 }
 
+/* ── Compute photo tops so stack bottom sits just above poem ───── */
+function photoTopsAbovePoem(f, photoCount) {
+  const layout = FRAMES[f];
+  const container = document.getElementById(`frame-output-${f}`);
+  const containerH = container.offsetHeight;
+  const hPct = layout.w * 1366 / 768;
+  const photoH = hPct / 100 * containerH; // px height of one photo
+  const poemTopPx = layout.poem.t / 100 * containerH;
+  const gapPx = containerH * 0.03; // 3% gap between stack and poem
+  const stackBottomPx = poemTopPx - gapPx;
+
+  if (photoCount >= 2) {
+    const t2 = (stackBottomPx - photoH) / containerH * 100;
+    const t1 = t2 - hPct;
+    return [t1, t2];
+  } else {
+    return [(stackBottomPx - photoH) / containerH * 100];
+  }
+}
+
 /* ── Render result (photos only, no poem yet) ──────────────────── */
 function renderResult(vintageCanvases) {
   const f = selectedFrame;
   const layout = FRAMES[f];
   const photoCount = vintageCanvases.length;
 
-  // Store for use by generatePoem
   window._vintageCanvases = vintageCanvases;
   window._photoCount = photoCount;
 
   document.querySelectorAll('.frame-output').forEach(el => el.classList.remove('active'));
   document.getElementById(`frame-output-${f}`).classList.add('active');
 
-  positionPhotos(f, photoCount >= 2 ? layout.photos2 : layout.photos1, vintageCanvases);
+  // Default centered tops before poem appears
+  const hPct = layout.w * 1366 / 768;
+  const defaultTops = photoCount >= 2
+    ? [50 - hPct, 50]
+    : [50 - hPct / 2];
+  positionPhotos(f, defaultTops, vintageCanvases);
 
-  // Hide poem
   const poemEl = document.getElementById(`poem-${f}`);
   poemEl.textContent = '';
   poemEl.style.opacity = '0';
 
-  // Reset poem button
   const btn = document.getElementById('btn-poem');
   btn.textContent = 'generate poem';
   btn.disabled = false;
@@ -268,20 +278,22 @@ async function generatePoem() {
   const photoCount = window._photoCount;
   const canvases  = window._vintageCanvases;
 
-  // Shift photos up for frames 1, 2, 4 — frame 3 stays centered
-  if (f !== 3 && layout.photos2_s) {
-    positionPhotos(f, photoCount >= 2 ? layout.photos2_s : layout.photos1_s, canvases);
-  }
-
-  // Show poem
+  // Place poem (invisible) so layout is computed before measuring
   const poemEl = document.getElementById(`poem-${f}`);
-  const p = layout.poem_s;
+  const p = layout.poem;
   poemEl.textContent = poemText;
   poemEl.style.left      = p.l + '%';
   poemEl.style.top       = p.t + '%';
   poemEl.style.width     = p.w + '%';
   poemEl.style.textAlign = p.align;
-  poemEl.style.opacity   = '1';
+  poemEl.style.opacity   = '0';
+
+  // Wait one frame for layout, then shift photos to sit above poem
+  requestAnimationFrame(() => {
+    const tops = photoTopsAbovePoem(f, photoCount);
+    positionPhotos(f, tops, canvases);
+    poemEl.style.opacity = '1';
+  });
 
   btn.textContent = 'regenerate';
   btn.disabled = false;
