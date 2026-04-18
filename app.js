@@ -23,19 +23,19 @@ const FRAMES = {
     w: 11.1,
     photos1: [{ l: 44.45 }],
     photos2: [{ l: 44.45 }, { l: 44.45 }],
-    poem: { l: 18, t: 63, w: 64, align: 'center' }
+    poem: { l: 18, t: 60, w: 64, align: 'center' }
   },
   3: {
     w: 14.2,
     photos1: [{ l: 42.9 }],
     photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 75, w: 60, align: 'center' }
+    poem: { l: 20, t: 60, w: 60, align: 'center' }
   },
   4: {
     w: 14.2,
     photos1: [{ l: 42.9 }],
     photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 63, w: 60, align: 'center' }
+    poem: { l: 20, t: 60, w: 60, align: 'center' }
   }
 };
 
@@ -184,8 +184,7 @@ function positionPhotos(f, tops, canvases) {
 /* ── Centered photo tops (no poem) ─────────────────────────────── */
 function centeredPhotoTops(f, photoCount) {
   const hPct = FRAMES[f].w * 1366 / 768;
-  // Stack center at 40% — slightly above midpoint to leave room for poem
-  const center = 40;
+  const center = 50;
   return photoCount >= 2
     ? [center - hPct, center]
     : [center - hPct / 2];
@@ -195,8 +194,8 @@ function centeredPhotoTops(f, photoCount) {
 function shiftedPhotoTops(f, photoCount) {
   const layout = FRAMES[f];
   const hPct = layout.w * 1366 / 768;
-  const gap = 3; // % between bottom of stack and top of poem
-  const topPad = 5; // % minimum distance from top of frame
+  const gap = 6; // % padding between bottom of stack and top of poem
+  const topPad = 8; // % minimum distance from top of frame
   const stackBottom = layout.poem.t - gap;
 
   if (photoCount >= 2) {
