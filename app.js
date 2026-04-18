@@ -9,46 +9,48 @@ const photos = { 1: null, 2: null }; // ImageBitmap after loading
 /* ── Frame layout data (positions as % of 1366×768 container)
       Each entry: { photos: [{l,t,w,h}, ...], poem: {l,t,w,align} }
       l/t/w/h are 0–100 percentages of the container dimension      */
-/* Photo height as % of container = w * (1366/768)
-   w=16.4 → h=29.2%   w=15.8 → h=28.1%
+/* Photo width reduced 10% from original estimates.
+   Photo height as % of container = w * (1366/768)
+   w=14.8 → h=26.3%   w=14.2 → h=25.3%
+   All photos horizontally centered (l = 50 - w/2).
    2-photo stack centered in mat (y: 5%–95%):
      t1 = 5 + (90 - 2*h) / 2,  t2 = t1 + h                  */
 const FRAMES = {
   1: {
     // Dark red frame (frame1.png)
-    photos1: [{ l: 41.8, t: 35.4, w: 16.4 }],
+    photos1: [{ l: 42.6, t: 36.9, w: 14.8 }],
     photos2: [
-      { l: 41.8, t: 20.8, w: 16.4 },
-      { l: 41.8, t: 50.0, w: 16.4 }
+      { l: 42.6, t: 23.7, w: 14.8 },
+      { l: 42.6, t: 50.0, w: 14.8 }
     ],
     poem: { l: 20, t: 82.5, w: 60, align: 'center' }
   },
   2: {
     // Plaid / doily frame (frame2.png)
-    photos1: [{ l: 41.8, t: 35.4, w: 16.4 }],
+    photos1: [{ l: 42.6, t: 36.9, w: 14.8 }],
     photos2: [
-      { l: 41.8, t: 20.8, w: 16.4 },
-      { l: 41.8, t: 50.0, w: 16.4 }
+      { l: 42.6, t: 23.7, w: 14.8 },
+      { l: 42.6, t: 50.0, w: 14.8 }
     ],
     poem: { l: 18, t: 83.5, w: 64, align: 'center' }
   },
   3: {
-    // Pink stripe + stars frame (frame3.png)
-    photos1: [{ l: 24.0, t: 35.9, w: 15.8 }],
+    // Pink stripe + stars frame (frame3.png) — centered
+    photos1: [{ l: 42.9, t: 37.4, w: 14.2 }],
     photos2: [
-      { l: 24.0, t: 21.9, w: 15.8 },
-      { l: 24.0, t: 50.0, w: 15.8 }
+      { l: 42.9, t: 24.7, w: 14.2 },
+      { l: 42.9, t: 50.0, w: 14.2 }
     ],
-    poem: { l: 59.0, t: 38.0, w: 32, align: 'left' }
+    poem: { l: 20, t: 82.0, w: 60, align: 'center' }
   },
   4: {
-    // Green polka dot frame (frame4.png)
-    photos1: [{ l: 33.0, t: 35.9, w: 15.8 }],
+    // Green polka dot frame (frame4.png) — centered
+    photos1: [{ l: 42.9, t: 37.4, w: 14.2 }],
     photos2: [
-      { l: 33.0, t: 21.9, w: 15.8 },
-      { l: 33.0, t: 50.0, w: 15.8 }
+      { l: 42.9, t: 24.7, w: 14.2 },
+      { l: 42.9, t: 50.0, w: 14.2 }
     ],
-    poem: { l: 60.0, t: 18.0, w: 34, align: 'left' }
+    poem: { l: 20, t: 82.0, w: 60, align: 'center' }
   }
 };
 
@@ -143,8 +145,8 @@ function applyVintageFilter(canvas) {
 
   ctx.putImageData(imageData, 0, 0);
 
-  // Black film bars top & bottom (~7% each)
-  const bar = Math.round(height * 0.07);
+  // Black film bars top & bottom (~6% each, 10% smaller than original)
+  const bar = Math.round(height * 0.063);
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, width, bar);
   ctx.fillRect(0, height - bar, width, bar);
