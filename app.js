@@ -14,21 +14,21 @@ const photos = { 1: null, 2: null }; // ImageBitmap after loading
    _s = shifted up 15pp when poem is shown (not used for frame 3).     */
 const FRAMES = {
   1: {
-    // Dark red — 15% smaller again (w = 12.6 * 0.85 = 10.71%)
-    w: 10.71,  // h = 19.05%
-    photos1:   [{ l: 44.6, t: 40.5 }],
-    photos2:   [{ l: 44.6, t: 30.5 }, { l: 44.6, t: 49.55 }],
-    photos1_s: [{ l: 44.6, t: 25.5 }],
-    photos2_s: [{ l: 44.6, t: 15.5 }, { l: 44.6, t: 34.55 }],
+    // Dark red — w = 12.6%, h = 22.41%
+    w: 12.6,
+    photos1:   [{ l: 43.7, t: 38.8 }],
+    photos2:   [{ l: 43.7, t: 27.6 }, { l: 43.7, t: 50.01 }],
+    photos1_s: [{ l: 43.7, t: 23.8 }],
+    photos2_s: [{ l: 43.7, t: 12.6 }, { l: 43.7, t: 35.01 }],
     poem_s: { l: 20, t: 62, w: 60, align: 'center' }
   },
   2: {
-    // Plaid / doily — w = 14.8%, h = 26.32%
-    w: 14.8,
-    photos1:   [{ l: 42.6, t: 36.8 }],
-    photos2:   [{ l: 42.6, t: 23.7 }, { l: 42.6, t: 50.02 }],
-    photos1_s: [{ l: 42.6, t: 21.8 }],
-    photos2_s: [{ l: 42.6, t:  8.7 }, { l: 42.6, t: 35.02 }],
+    // Plaid / doily — 15% smaller (w = 14.8 * 0.85 = 12.58%), h = 22.38%
+    w: 12.58,
+    photos1:   [{ l: 43.7, t: 38.8 }],
+    photos2:   [{ l: 43.7, t: 27.6 }, { l: 43.7, t: 50.01 }],
+    photos1_s: [{ l: 43.7, t: 23.8 }],
+    photos2_s: [{ l: 43.7, t: 12.6 }, { l: 43.7, t: 35.01 }],
     poem_s: { l: 18, t: 66, w: 64, align: 'center' }
   },
   3: {
