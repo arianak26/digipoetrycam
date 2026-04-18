@@ -9,48 +9,43 @@ const photos = { 1: null, 2: null }; // ImageBitmap after loading
 /* ── Frame layout data (positions as % of 1366×768 container)
       Each entry: { photos: [{l,t,w,h}, ...], poem: {l,t,w,align} }
       l/t/w/h are 0–100 percentages of the container dimension      */
-/* Photo width reduced 10% from original estimates.
-   Photo height as % of container = w * (1366/768)
-   w=14.8 → h=26.3%   w=14.2 → h=25.3%
-   All photos horizontally centered (l = 50 - w/2).
-   2-photo stack centered in mat (y: 5%–95%):
-     t1 = 5 + (90 - 2*h) / 2,  t2 = t1 + h                  */
+/* Photo sizes and positions (% of 1366×768 container).
+   h is computed as w * (1366/768) and set explicitly to eliminate gaps.
+   _s = shifted up 15pp when poem is shown (not used for frame 3).     */
 const FRAMES = {
   1: {
-    // Dark red frame (frame1.png)
-    photos1: [{ l: 42.6, t: 36.9, w: 14.8 }],
-    photos2: [
-      { l: 42.6, t: 23.7, w: 14.8 },
-      { l: 42.6, t: 50.0, w: 14.8 }
-    ],
-    poem: { l: 20, t: 82.5, w: 60, align: 'center' }
+    // Dark red — additional 15% smaller (w = 14.8 * 0.85 = 12.6%)
+    w: 12.6,  // h = 22.41%
+    photos1:   [{ l: 43.7, t: 38.8 }],
+    photos2:   [{ l: 43.7, t: 27.6 }, { l: 43.7, t: 50.01 }],
+    photos1_s: [{ l: 43.7, t: 23.8 }],
+    photos2_s: [{ l: 43.7, t: 12.6 }, { l: 43.7, t: 35.01 }],
+    poem_s: { l: 20, t: 62, w: 60, align: 'center' }
   },
   2: {
-    // Plaid / doily frame (frame2.png)
-    photos1: [{ l: 42.6, t: 36.9, w: 14.8 }],
-    photos2: [
-      { l: 42.6, t: 23.7, w: 14.8 },
-      { l: 42.6, t: 50.0, w: 14.8 }
-    ],
-    poem: { l: 18, t: 83.5, w: 64, align: 'center' }
+    // Plaid / doily — w = 14.8%, h = 26.32%
+    w: 14.8,
+    photos1:   [{ l: 42.6, t: 36.8 }],
+    photos2:   [{ l: 42.6, t: 23.7 }, { l: 42.6, t: 50.02 }],
+    photos1_s: [{ l: 42.6, t: 21.8 }],
+    photos2_s: [{ l: 42.6, t:  8.7 }, { l: 42.6, t: 35.02 }],
+    poem_s: { l: 18, t: 66, w: 64, align: 'center' }
   },
   3: {
-    // Pink stripe + stars frame (frame3.png) — centered
-    photos1: [{ l: 42.9, t: 37.4, w: 14.2 }],
-    photos2: [
-      { l: 42.9, t: 24.7, w: 14.2 },
-      { l: 42.9, t: 50.0, w: 14.2 }
-    ],
-    poem: { l: 20, t: 82.0, w: 60, align: 'center' }
+    // Pink stripe — w = 14.2%, h = 25.26% — photos never shift
+    w: 14.2,
+    photos1:   [{ l: 42.9, t: 37.4 }],
+    photos2:   [{ l: 42.9, t: 24.7 }, { l: 42.9, t: 49.96 }],
+    poem_s: { l: 20, t: 80, w: 60, align: 'center' }
   },
   4: {
-    // Green polka dot frame (frame4.png) — centered
-    photos1: [{ l: 42.9, t: 37.4, w: 14.2 }],
-    photos2: [
-      { l: 42.9, t: 24.7, w: 14.2 },
-      { l: 42.9, t: 50.0, w: 14.2 }
-    ],
-    poem: { l: 20, t: 82.0, w: 60, align: 'center' }
+    // Green polka dot — w = 14.2%, h = 25.26%
+    w: 14.2,
+    photos1:   [{ l: 42.9, t: 37.4 }],
+    photos2:   [{ l: 42.9, t: 24.7 }, { l: 42.9, t: 49.96 }],
+    photos1_s: [{ l: 42.9, t: 22.4 }],
+    photos2_s: [{ l: 42.9, t:  9.7 }, { l: 42.9, t: 34.96 }],
+    poem_s: { l: 20, t: 65, w: 60, align: 'center' }
   }
 };
 
@@ -166,35 +161,92 @@ function makeVintageCanvas(bitmap, targetSize) {
 async function createFrame() {
   showScreen('screen-loading');
 
-  // Gather uploaded photos
   const photoList = [photos[1], photos[2]].filter(Boolean);
-
-  // Process photos into vintage canvases (512px squares for quality)
   const vintageCanvases = photoList.map(bm => makeVintageCanvas(bm, 512));
 
-  // Send the FIRST photo (unfiltered) to Claude for poem generation
-  // We use a 512×512 crop of the original for analysis
+  renderResult(vintageCanvases);
+  showScreen('screen-result');
+}
+
+/* ── Position photos helper ────────────────────────────────────── */
+function positionPhotos(f, positions, canvases) {
+  const layout = FRAMES[f];
+  // Height computed precisely so stacked photos have zero gap
+  const hPct = (layout.w * 1366 / 768).toFixed(3);
+
+  canvases.forEach((src, i) => {
+    const pos = positions[i];
+    if (!pos) return;
+    const dest = document.getElementById(`photo-${i === 0 ? 'a' : 'b'}-${f}`);
+    dest.width  = src.width;
+    dest.height = src.height;
+    dest.getContext('2d').drawImage(src, 0, 0);
+    dest.style.left   = pos.l + '%';
+    dest.style.top    = pos.t + '%';
+    dest.style.width  = layout.w + '%';
+    dest.style.height = hPct + '%';
+    dest.style.display = 'block';
+  });
+
+  if (canvases.length === 1) {
+    document.getElementById(`photo-b-${f}`).style.display = 'none';
+  }
+}
+
+/* ── Render result (photos only, no poem yet) ──────────────────── */
+function renderResult(vintageCanvases) {
+  const f = selectedFrame;
+  const layout = FRAMES[f];
+  const photoCount = vintageCanvases.length;
+
+  // Store for use by generatePoem
+  window._vintageCanvases = vintageCanvases;
+  window._photoCount = photoCount;
+
+  document.querySelectorAll('.frame-output').forEach(el => el.classList.remove('active'));
+  document.getElementById(`frame-output-${f}`).classList.add('active');
+
+  positionPhotos(f, photoCount >= 2 ? layout.photos2 : layout.photos1, vintageCanvases);
+
+  // Hide poem
+  const poemEl = document.getElementById(`poem-${f}`);
+  poemEl.textContent = '';
+  poemEl.style.opacity = '0';
+
+  // Reset poem button
+  const btn = document.getElementById('btn-poem');
+  btn.textContent = 'generate poem';
+  btn.disabled = false;
+}
+
+/* ── Generate poem on demand ───────────────────────────────────── */
+async function generatePoem() {
+  const f = selectedFrame;
+  const btn = document.getElementById('btn-poem');
+  btn.disabled = true;
+  btn.textContent = 'writing poem...';
+
+  const photoList = [photos[1], photos[2]].filter(Boolean);
   let poemText = '';
+
   try {
-    const analysisCanvas = document.createElement('canvas');
-    analysisCanvas.width = 512;
-    analysisCanvas.height = 512;
-    drawCroppedSquare(analysisCanvas.getContext('2d'), photoList[0], 512);
-    // If 2 photos, also analyse photo 2 and stitch side-by-side for context
+    const a = document.createElement('canvas');
+    a.width = 512; a.height = 512;
+    drawCroppedSquare(a.getContext('2d'), photoList[0], 512);
+
     let base64Image;
     if (photoList.length === 2) {
       const combo = document.createElement('canvas');
-      combo.width = 1024;
-      combo.height = 512;
+      combo.width = 1024; combo.height = 512;
       const cctx = combo.getContext('2d');
-      cctx.drawImage(analysisCanvas, 0, 0);
-      const c2 = document.createElement('canvas');
-      c2.width = 512; c2.height = 512;
-      drawCroppedSquare(c2.getContext('2d'), photoList[1], 512);
-      cctx.drawImage(c2, 512, 0);
+      cctx.drawImage(a, 0, 0);
+      const b = document.createElement('canvas');
+      b.width = 512; b.height = 512;
+      drawCroppedSquare(b.getContext('2d'), photoList[1], 512);
+      cctx.drawImage(b, 512, 0);
       base64Image = combo.toDataURL('image/jpeg', 0.85).split(',')[1];
     } else {
-      base64Image = analysisCanvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+      base64Image = a.toDataURL('image/jpeg', 0.85).split(',')[1];
     }
 
     const response = await fetch('/api/generate-poem', {
@@ -212,55 +264,27 @@ async function createFrame() {
     poemText = 'light held still\nfor one small breath';
   }
 
-  renderResult(vintageCanvases, poemText);
-  showScreen('screen-result');
-}
-
-/* ── Render result frame ───────────────────────────────────────── */
-function renderResult(vintageCanvases, poemText) {
-  const f = selectedFrame;
   const layout = FRAMES[f];
-  const photoCount = vintageCanvases.length;
-  const positions = photoCount >= 2 ? layout.photos2 : layout.photos1;
+  const photoCount = window._photoCount;
+  const canvases  = window._vintageCanvases;
 
-  // Hide all frames, show selected
-  document.querySelectorAll('.frame-output').forEach(el => el.classList.remove('active'));
-  document.getElementById(`frame-output-${f}`).classList.add('active');
+  // Shift photos up for frames 1, 2, 4 — frame 3 stays centered
+  if (f !== 3 && layout.photos2_s) {
+    positionPhotos(f, photoCount >= 2 ? layout.photos2_s : layout.photos1_s, canvases);
+  }
 
-  // Position and draw photo canvases
-  vintageCanvases.forEach((src, i) => {
-    const pos = positions[i];
-    if (!pos) return;
-
-    const dest = document.getElementById(`photo-${i === 0 ? 'a' : 'b'}-${f}`);
-    // Copy pixel data from src vintage canvas
-    dest.width  = src.width;
-    dest.height = src.height;
-    dest.getContext('2d').drawImage(src, 0, 0);
-
-    // Position as % within the frame container
-    dest.style.left   = pos.l + '%';
-    dest.style.top    = pos.t + '%';
-    dest.style.width  = pos.w + '%';
-    dest.style.height = 'auto';
-    dest.style.aspectRatio = '1 / 1';
-    dest.style.display = 'block';
-  });
-
-  // Hide unused canvases
-  const unusedId = vintageCanvases.length === 1
-    ? `photo-b-${f}`
-    : null;
-  if (unusedId) document.getElementById(unusedId).style.display = 'none';
-
-  // Set poem text
+  // Show poem
   const poemEl = document.getElementById(`poem-${f}`);
+  const p = layout.poem_s;
   poemEl.textContent = poemText;
-  const p = layout.poem;
   poemEl.style.left      = p.l + '%';
   poemEl.style.top       = p.t + '%';
   poemEl.style.width     = p.w + '%';
   poemEl.style.textAlign = p.align;
+  poemEl.style.opacity   = '1';
+
+  btn.textContent = 'regenerate';
+  btn.disabled = false;
 }
 
 /* ── Download ──────────────────────────────────────────────────── */

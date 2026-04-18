@@ -39,8 +39,8 @@ html, body {
 /* "enter" button centered over the booth door curtain area */
 .enter-btn {
   position: absolute;
-  left: 41%;
-  top: 49%;
+  left: 39%;
+  top: 51%;
   transform: translate(-50%, -50%);
   background: transparent;
   border: none;
@@ -307,10 +307,13 @@ html, body {
 }
 .photo-canvas {
   position: absolute;
-  /* left/top/width/height set via JS inline styles as % */
   object-fit: cover;
-  /* subtle blur mimics vintage film enlarger softness */
   filter: blur(0.4px);
+  transition: top 0.45s ease;
+}
+
+.poem-layer {
+  transition: opacity 0.4s ease;
 }
 
 /* ── Poem text overlays ── */
@@ -353,6 +356,22 @@ html, body {
   color: #2e1a0a;
   text-align: left;
 }
+
+/* ── Generate poem button ── */
+.btn-poem {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  color: #3a2a1a;
+  background: #faf6ee;
+  border: 1.5px solid #b8a882;
+  border-radius: 28px;
+  padding: 9px 38px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  letter-spacing: 0.04em;
+}
+.btn-poem:hover:not(:disabled) { background: #ede8dc; }
+.btn-poem:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ── Result action buttons ── */
 .result-actions {
