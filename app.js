@@ -9,41 +9,44 @@ const photos = { 1: null, 2: null }; // ImageBitmap after loading
 /* ── Frame layout data (positions as % of 1366×768 container)
       Each entry: { photos: [{l,t,w,h}, ...], poem: {l,t,w,align} }
       l/t/w/h are 0–100 percentages of the container dimension      */
+/* Photo height as % of container = w * (1366/768)
+   w=16.4 → h=29.2%   w=15.8 → h=28.1%
+   2-photo stack centered in mat (y: 5%–95%):
+     t1 = 5 + (90 - 2*h) / 2,  t2 = t1 + h                  */
 const FRAMES = {
   1: {
-    // Dark red frame (3.png)
-    // Single photo centered in upper mat; or 2 stacked vertically
-    photos1: [{ l: 41.8, t: 13.5, w: 16.4, h: 28.9 }],
+    // Dark red frame (frame1.png)
+    photos1: [{ l: 41.8, t: 35.4, w: 16.4 }],
     photos2: [
-      { l: 41.8, t: 9.0,  w: 16.4, h: 27.5 },
-      { l: 41.8, t: 49.5, w: 16.4, h: 27.5 }
+      { l: 41.8, t: 20.8, w: 16.4 },
+      { l: 41.8, t: 50.0, w: 16.4 }
     ],
     poem: { l: 20, t: 82.5, w: 60, align: 'center' }
   },
   2: {
-    // Plaid / doily frame (4.png)
-    photos1: [{ l: 41.8, t: 18.0, w: 16.4, h: 27.5 }],
+    // Plaid / doily frame (frame2.png)
+    photos1: [{ l: 41.8, t: 35.4, w: 16.4 }],
     photos2: [
-      { l: 41.8, t: 12.5, w: 16.4, h: 27.5 },
-      { l: 41.8, t: 52.0, w: 16.4, h: 27.5 }
+      { l: 41.8, t: 20.8, w: 16.4 },
+      { l: 41.8, t: 50.0, w: 16.4 }
     ],
     poem: { l: 18, t: 83.5, w: 64, align: 'center' }
   },
   3: {
-    // Pink stripe + stars frame (5.png)
-    photos1: [{ l: 24.0, t: 23.0, w: 15.8, h: 27.9 }],
+    // Pink stripe + stars frame (frame3.png)
+    photos1: [{ l: 24.0, t: 35.9, w: 15.8 }],
     photos2: [
-      { l: 24.0, t: 18.0, w: 15.8, h: 27.5 },
-      { l: 24.0, t: 52.5, w: 15.8, h: 27.5 }
+      { l: 24.0, t: 21.9, w: 15.8 },
+      { l: 24.0, t: 50.0, w: 15.8 }
     ],
     poem: { l: 59.0, t: 38.0, w: 32, align: 'left' }
   },
   4: {
-    // Green polka dot frame (6.png)
-    photos1: [{ l: 33.0, t: 15.5, w: 15.8, h: 27.9 }],
+    // Green polka dot frame (frame4.png)
+    photos1: [{ l: 33.0, t: 35.9, w: 15.8 }],
     photos2: [
-      { l: 33.0, t: 11.5, w: 15.8, h: 27.5 },
-      { l: 33.0, t: 49.0, w: 15.8, h: 27.5 }
+      { l: 33.0, t: 21.9, w: 15.8 },
+      { l: 33.0, t: 50.0, w: 15.8 }
     ],
     poem: { l: 60.0, t: 18.0, w: 34, align: 'left' }
   }
