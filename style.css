@@ -332,16 +332,13 @@ html, body {
   transition: top 0.45s ease;
 }
 
-.poem-layer {
-  transition: opacity 0.4s ease;
-}
-
 /* ── Poem text overlays ── */
 .poem-layer {
   position: absolute;
   white-space: pre-line;
   line-height: 1.5;
   pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
 /* Frame 1: Citadel Script, warm gold */
@@ -350,7 +347,6 @@ html, body {
   font-size: clamp(0.95rem, 1.7vw, 1.35rem);
   color: #c9a878;
   text-align: center;
-  /* position set via JS */
 }
 
 /* Frame 2: Lavonia Classy, warm sepia */

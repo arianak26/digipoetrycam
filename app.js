@@ -4,14 +4,11 @@
 
 /* ── State ─────────────────────────────────────────────────────── */
 let selectedFrame = null;
-const photos = { 1: null, 2: null }; // ImageBitmap after loading
+let activeCanvases = [];
+let activePhotoCount = 0;
+const photos = { 1: null, 2: null };
 
-/* ── Frame layout data (positions as % of 1366×768 container)
-      Each entry: { photos: [{l,t,w,h}, ...], poem: {l,t,w,align} }
-      l/t/w/h are 0–100 percentages of the container dimension      */
-/* Photo sizes and positions (% of 1366×768 container).
-   h is computed as w * (1366/768) and set explicitly to eliminate gaps.
-   _s = shifted up 15pp when poem is shown (not used for frame 3).     */
+/* ── Frame layout (positions as % of 1366×768 container) ───────── */
 const FRAMES = {
   1: {
     w: 12.6,
@@ -64,21 +61,17 @@ async function handleFile(slot, input) {
   const bitmap = await createImageBitmap(file);
   photos[slot] = bitmap;
 
-  // Draw cropped square preview into slot canvas
   const canvas = document.getElementById(`preview-${slot}`);
-  const size = 320;
-  canvas.width = size;
-  canvas.height = size;
-  drawCroppedSquare(canvas.getContext('2d'), bitmap, size);
+  canvas.width = canvas.height = 320;
+  drawCroppedSquare(canvas.getContext('2d'), bitmap, 320);
 
-  // Show preview, hide placeholder
   canvas.classList.remove('hidden');
   document.getElementById(`placeholder-${slot}`).classList.add('hidden');
   document.getElementById(`remove-${slot}`).classList.remove('hidden');
   document.getElementById(`slot-${slot}`).classList.add('filled');
 
   updateCreateButton();
-  input.value = ''; // allow re-selecting same file
+  input.value = '';
 }
 
 function removePhoto(slot, event) {
@@ -98,8 +91,6 @@ function updateCreateButton() {
 }
 
 /* ── Image utilities ───────────────────────────────────────────── */
-
-/** Center-crops an ImageBitmap to a square, draws into ctx at (0,0,size,size) */
 function drawCroppedSquare(ctx, bitmap, size) {
   const sw = Math.min(bitmap.width, bitmap.height);
   const sx = (bitmap.width  - sw) / 2;
@@ -137,7 +128,6 @@ function applyVintageFilter(canvas) {
   ctx.fillRect(0, height - bar, width, bar);
 }
 
-/** Returns a new canvas with the photo cropped, filtered, at targetSize px square */
 function makeVintageCanvas(bitmap, targetSize) {
   const c = document.createElement('canvas');
   c.width = targetSize;
@@ -219,8 +209,8 @@ function renderResult(vintageCanvases) {
   const layout = FRAMES[f];
   const photoCount = vintageCanvases.length;
 
-  window._vintageCanvases = vintageCanvases;
-  window._photoCount = photoCount;
+  activeCanvases = vintageCanvases;
+  activePhotoCount = photoCount;
 
   document.querySelectorAll('.frame-output').forEach(el => el.classList.remove('active'));
   document.getElementById(`frame-output-${f}`).classList.add('active');
@@ -282,8 +272,6 @@ async function generatePoem() {
   }
 
   const layout = FRAMES[f];
-  const photoCount = window._photoCount;
-  const canvases  = window._vintageCanvases;
 
   // Place poem (invisible) so layout is computed before measuring
   const poemEl = document.getElementById(`poem-${f}`);
@@ -296,7 +284,7 @@ async function generatePoem() {
   poemEl.style.opacity   = '0';
 
   requestAnimationFrame(() => {
-    positionPhotos(f, activePhotoTops(f, photoCount), canvases);
+    positionPhotos(f, activePhotoTops(f, activePhotoCount), activeCanvases);
     poemEl.style.opacity = '1';
   });
 
@@ -326,12 +314,12 @@ async function downloadFrame() {
 
 /* ── Restart ───────────────────────────────────────────────────── */
 function restart() {
-  // Reset state
   photos[1] = null;
   photos[2] = null;
   selectedFrame = null;
+  activeCanvases = [];
+  activePhotoCount = 0;
 
-  // Reset upload UI
   [1, 2].forEach(slot => {
     const canvas = document.getElementById(`preview-${slot}`);
     canvas.classList.add('hidden');
@@ -341,7 +329,6 @@ function restart() {
   });
   document.getElementById('btn-create').disabled = true;
 
-  // Reset all photo canvases and poem text
   for (let f = 1; f <= 4; f++) {
     ['a', 'b'].forEach(ab => {
       const c = document.getElementById(`photo-${ab}-${f}`);
