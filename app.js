@@ -181,24 +181,37 @@ function positionPhotos(f, tops, canvases) {
   }
 }
 
-/* ── Compute photo tops so stack bottom sits just above poem ───── */
-function photoTopsAbovePoem(f, photoCount) {
+/* ── Centered photo tops (no poem) ─────────────────────────────── */
+function centeredPhotoTops(f, photoCount) {
+  const hPct = FRAMES[f].w * 1366 / 768;
+  // Stack center at 40% — slightly above midpoint to leave room for poem
+  const center = 40;
+  return photoCount >= 2
+    ? [center - hPct, center]
+    : [center - hPct / 2];
+}
+
+/* ── Photo tops shifted up so stack bottom clears poem + gap ────── */
+function shiftedPhotoTops(f, photoCount) {
   const layout = FRAMES[f];
-  const container = document.getElementById(`frame-output-${f}`);
-  const containerH = container.offsetHeight;
   const hPct = layout.w * 1366 / 768;
-  const photoH = hPct / 100 * containerH; // px height of one photo
-  const poemTopPx = layout.poem.t / 100 * containerH;
-  const gapPx = containerH * 0.03; // 3% gap between stack and poem
-  const stackBottomPx = poemTopPx - gapPx;
+  const gap = 3; // % between bottom of stack and top of poem
+  const topPad = 5; // % minimum distance from top of frame
+  const stackBottom = layout.poem.t - gap;
 
   if (photoCount >= 2) {
-    const t2 = (stackBottomPx - photoH) / containerH * 100;
-    const t1 = t2 - hPct;
-    return [t1, t2];
+    const t2 = Math.max(stackBottom - hPct, topPad + hPct);
+    return [t2 - hPct, t2];
   } else {
-    return [(stackBottomPx - photoH) / containerH * 100];
+    return [Math.max(stackBottom - hPct, topPad)];
   }
+}
+
+/* ── Active tops: only shift up — never push photos down ─────────── */
+function activePhotoTops(f, photoCount) {
+  const centered = centeredPhotoTops(f, photoCount);
+  const shifted  = shiftedPhotoTops(f, photoCount);
+  return centered.map((c, i) => Math.min(c, shifted[i]));
 }
 
 /* ── Render result (photos only, no poem yet) ──────────────────── */
@@ -213,9 +226,7 @@ function renderResult(vintageCanvases) {
   document.querySelectorAll('.frame-output').forEach(el => el.classList.remove('active'));
   document.getElementById(`frame-output-${f}`).classList.add('active');
 
-  // Start photos 5pp below their poem-shifted position so they always animate UP
-  const defaultTops = photoTopsAbovePoem(f, photoCount).map(t => t + 5);
-  positionPhotos(f, defaultTops, vintageCanvases);
+  positionPhotos(f, centeredPhotoTops(f, photoCount), vintageCanvases);
 
   const poemEl = document.getElementById(`poem-${f}`);
   poemEl.textContent = '';
@@ -285,10 +296,8 @@ async function generatePoem() {
   poemEl.style.textAlign = p.align;
   poemEl.style.opacity   = '0';
 
-  // Wait one frame for layout, then shift photos to sit above poem
   requestAnimationFrame(() => {
-    const tops = photoTopsAbovePoem(f, photoCount);
-    positionPhotos(f, tops, canvases);
+    positionPhotos(f, activePhotoTops(f, photoCount), canvases);
     poemEl.style.opacity = '1';
   });
 
