@@ -39,8 +39,8 @@ html, body {
 /* "enter" button centered over the booth door curtain area */
 .enter-btn {
   position: absolute;
-  left: 40%;
-  top: 58%;
+  left: 40.5%;
+  top: 44%;
   transform: translate(-50%, -50%);
   background: transparent;
   border: none;

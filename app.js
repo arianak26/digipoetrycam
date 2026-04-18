@@ -23,12 +23,12 @@ const FRAMES = {
     poem_s: { l: 20, t: 62, w: 60, align: 'center' }
   },
   2: {
-    // Plaid / doily — 15% smaller (w = 14.8 * 0.85 = 12.58%), h = 22.38%
-    w: 12.58,
-    photos1:   [{ l: 43.7, t: 38.8 }],
-    photos2:   [{ l: 43.7, t: 27.6 }, { l: 43.7, t: 50.01 }],
-    photos1_s: [{ l: 43.7, t: 23.8 }],
-    photos2_s: [{ l: 43.7, t: 12.6 }, { l: 43.7, t: 35.01 }],
+    // Plaid / doily — 25% smaller total (w = 14.8 * 0.75 = 11.1%), h = 19.74%
+    w: 11.1,
+    photos1:   [{ l: 44.45, t: 40.1 }],
+    photos2:   [{ l: 44.45, t: 30.2 }, { l: 44.45, t: 49.94 }],
+    photos1_s: [{ l: 44.45, t: 25.2 }],
+    photos2_s: [{ l: 44.45, t: 15.2 }, { l: 44.45, t: 34.94 }],
     poem_s: { l: 18, t: 66, w: 64, align: 'center' }
   },
   3: {
