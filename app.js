@@ -17,25 +17,25 @@ const FRAMES = {
     w: 12.6,
     photos1: [{ l: 43.7 }],
     photos2: [{ l: 43.7 }, { l: 43.7 }],
-    poem: { l: 20, t: 65, w: 60, align: 'center' }
+    poem: { l: 20, t: 60, w: 60, align: 'center' }
   },
   2: {
     w: 11.1,
     photos1: [{ l: 44.45 }],
     photos2: [{ l: 44.45 }, { l: 44.45 }],
-    poem: { l: 18, t: 68, w: 64, align: 'center' }
+    poem: { l: 18, t: 63, w: 64, align: 'center' }
   },
   3: {
     w: 14.2,
     photos1: [{ l: 42.9 }],
     photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 80, w: 60, align: 'center' }
+    poem: { l: 20, t: 75, w: 60, align: 'center' }
   },
   4: {
     w: 14.2,
     photos1: [{ l: 42.9 }],
     photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 68, w: 60, align: 'center' }
+    poem: { l: 20, t: 63, w: 60, align: 'center' }
   }
 };
 
@@ -213,11 +213,8 @@ function renderResult(vintageCanvases) {
   document.querySelectorAll('.frame-output').forEach(el => el.classList.remove('active'));
   document.getElementById(`frame-output-${f}`).classList.add('active');
 
-  // Default centered tops before poem appears
-  const hPct = layout.w * 1366 / 768;
-  const defaultTops = photoCount >= 2
-    ? [50 - hPct, 50]
-    : [50 - hPct / 2];
+  // Start photos 5pp below their poem-shifted position so they always animate UP
+  const defaultTops = photoTopsAbovePoem(f, photoCount).map(t => t + 5);
   positionPhotos(f, defaultTops, vintageCanvases);
 
   const poemEl = document.getElementById(`poem-${f}`);

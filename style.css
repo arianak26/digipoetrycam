@@ -1,3 +1,23 @@
+/* ─── Canva fonts (drop TTF/OTF files into assets/fonts/) ───────── */
+@font-face {
+  font-family: 'Citadel Script';
+  src: url('assets/fonts/CitadelScript.ttf') format('truetype'),
+       url('assets/fonts/CitadelScript.otf') format('opentype');
+  font-weight: normal; font-style: normal;
+}
+@font-face {
+  font-family: 'Lavonia Classy';
+  src: url('assets/fonts/LavoniaClassy.ttf') format('truetype'),
+       url('assets/fonts/LavoniaClassy.otf') format('opentype');
+  font-weight: normal; font-style: normal;
+}
+@font-face {
+  font-family: 'Rolling Pen Curly';
+  src: url('assets/fonts/RollingPenCurly.ttf') format('truetype'),
+       url('assets/fonts/RollingPenCurly.otf') format('opentype');
+  font-weight: normal; font-style: normal;
+}
+
 /* ─── Reset & Base ─────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -324,35 +344,35 @@ html, body {
   pointer-events: none;
 }
 
-/* Frame 1: dark red — Parfumerie Script style, warm gold, centered below photo */
+/* Frame 1: Citadel Script, warm gold */
 .poem-1 {
-  font-family: 'Pinyon Script', cursive;
-  font-size: clamp(0.65rem, 1.4vw, 1.05rem);
+  font-family: 'Citadel Script', 'Pinyon Script', cursive;
+  font-size: clamp(0.95rem, 1.7vw, 1.35rem);
   color: #c9a878;
   text-align: center;
   /* position set via JS */
 }
 
-/* Frame 2: plaid/doily — Lavinia Classy style, warm sepia, centered */
+/* Frame 2: Lavonia Classy, warm sepia */
 .poem-2 {
-  font-family: 'Great Vibes', cursive;
-  font-size: clamp(0.6rem, 1.3vw, 0.95rem);
+  font-family: 'Lavonia Classy', 'Great Vibes', cursive;
+  font-size: clamp(0.9rem, 1.6vw, 1.25rem);
   color: #5a3a1a;
   text-align: center;
 }
 
-/* Frame 3: pink stripe — Lavinia Classy style, muted rose-brown, right side */
+/* Frame 3: Lavonia Classy, muted rose-brown */
 .poem-3 {
-  font-family: 'Great Vibes', cursive;
-  font-size: clamp(0.55rem, 1.2vw, 0.88rem);
+  font-family: 'Lavonia Classy', 'Great Vibes', cursive;
+  font-size: clamp(0.85rem, 1.5vw, 1.18rem);
   color: #6b3a3a;
   text-align: left;
 }
 
-/* Frame 4: green polka dot — Rolling Pen Curly style, dark brown, right side */
+/* Frame 4: Rolling Pen Curly, dark brown */
 .poem-4 {
-  font-family: 'Parisienne', cursive;
-  font-size: clamp(0.55rem, 1.15vw, 0.85rem);
+  font-family: 'Rolling Pen Curly', 'Parisienne', cursive;
+  font-size: clamp(0.85rem, 1.45vw, 1.15rem);
   color: #2e1a0a;
   text-align: left;
 }
