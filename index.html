@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ari's Poetry Photobooth</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pinyon+Script&family=Parisienne&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- SCREEN 1: Landing -->
+  <div id="screen-landing" class="screen active">
+    <div class="landing-wrap">
+      <img src="assets/landing.png" alt="Ari's Poetry Photobooth" class="landing-img">
+      <button class="enter-btn" id="enter-btn" onclick="showScreen('screen-select')">enter</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Frame Selection -->
+  <div id="screen-select" class="screen">
+    <div class="select-wrap">
+      <img src="assets/selector.png" alt="Pick a frame" class="select-img">
+      <div class="frame-grid">
+        <button class="frame-pick" data-frame="1" onclick="selectFrame(1)" aria-label="Frame 1: Dark Red"></button>
+        <button class="frame-pick" data-frame="2" onclick="selectFrame(2)" aria-label="Frame 2: Plaid"></button>
+        <button class="frame-pick" data-frame="3" onclick="selectFrame(3)" aria-label="Frame 3: Pink Stripe"></button>
+        <button class="frame-pick" data-frame="4" onclick="selectFrame(4)" aria-label="Frame 4: Green Polka Dot"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Photo Upload -->
+  <div id="screen-upload" class="screen">
+    <div class="upload-wrap">
+      <div class="upload-card">
+        <h2 class="upload-title">upload your photos</h2>
+        <p class="upload-sub">1 or 2 photos · they'll be styled into vintage film</p>
+
+        <div class="slots-row">
+          <!-- Slot 1 -->
+          <div class="slot" id="slot-1" onclick="triggerUpload(1)">
+            <canvas id="preview-1" class="slot-preview hidden"></canvas>
+            <div class="slot-placeholder" id="placeholder-1">
+              <span class="slot-plus">+</span>
+              <span class="slot-label">photo 1</span>
+            </div>
+            <button class="slot-remove hidden" id="remove-1" onclick="removePhoto(1, event)" aria-label="Remove photo 1">×</button>
+          </div>
+
+          <!-- Slot 2 -->
+          <div class="slot" id="slot-2" onclick="triggerUpload(2)">
+            <canvas id="preview-2" class="slot-preview hidden"></canvas>
+            <div class="slot-placeholder" id="placeholder-2">
+              <span class="slot-plus">+</span>
+              <span class="slot-label">photo 2</span>
+            </div>
+            <button class="slot-remove hidden" id="remove-2" onclick="removePhoto(2, event)" aria-label="Remove photo 2">×</button>
+          </div>
+        </div>
+
+        <input type="file" id="file-input-1" accept="image/*" style="display:none" onchange="handleFile(1, this)">
+        <input type="file" id="file-input-2" accept="image/*" style="display:none" onchange="handleFile(2, this)">
+
+        <button class="btn-create" id="btn-create" disabled onclick="createFrame()">
+          develop film
+        </button>
+
+        <button class="btn-back" onclick="showScreen('screen-select')">← back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Processing -->
+  <div id="screen-loading" class="screen">
+    <div class="loading-wrap">
+      <div class="film-reel">
+        <div class="reel-inner"></div>
+      </div>
+      <p class="loading-text">developing your film...</p>
+      <p class="loading-sub">writing your poem...</p>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: Result -->
+  <div id="screen-result" class="screen">
+    <div class="result-wrap">
+
+      <!-- Frame 1: Dark Red -->
+      <div class="frame-output" id="frame-output-1">
+        <img src="assets/frame1.png" alt="" class="frame-bg">
+        <div class="photo-layer" id="photos-1">
+          <canvas class="photo-canvas" id="photo-a-1"></canvas>
+          <canvas class="photo-canvas" id="photo-b-1"></canvas>
+        </div>
+        <div class="poem-layer poem-1" id="poem-1"></div>
+      </div>
+
+      <!-- Frame 2: Plaid/Doily -->
+      <div class="frame-output" id="frame-output-2">
+        <img src="assets/frame2.png" alt="" class="frame-bg">
+        <div class="photo-layer" id="photos-2">
+          <canvas class="photo-canvas" id="photo-a-2"></canvas>
+          <canvas class="photo-canvas" id="photo-b-2"></canvas>
+        </div>
+        <div class="poem-layer poem-2" id="poem-2"></div>
+      </div>
+
+      <!-- Frame 3: Pink Stripe -->
+      <div class="frame-output" id="frame-output-3">
+        <img src="assets/frame3.png" alt="" class="frame-bg">
+        <div class="photo-layer" id="photos-3">
+          <canvas class="photo-canvas" id="photo-a-3"></canvas>
+          <canvas class="photo-canvas" id="photo-b-3"></canvas>
+        </div>
+        <div class="poem-layer poem-3" id="poem-3"></div>
+      </div>
+
+      <!-- Frame 4: Green Polka Dot -->
+      <div class="frame-output" id="frame-output-4">
+        <img src="assets/frame4.png" alt="" class="frame-bg">
+        <div class="photo-layer" id="photos-4">
+          <canvas class="photo-canvas" id="photo-a-4"></canvas>
+          <canvas class="photo-canvas" id="photo-b-4"></canvas>
+        </div>
+        <div class="poem-layer poem-4" id="poem-4"></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-download" onclick="downloadFrame()">download</button>
+        <button class="btn-restart" onclick="restart()">start over</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

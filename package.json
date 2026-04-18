@@ -1,0 +1,11 @@
+{
+  "name": "digi-poetry-cam",
+  "version": "1.0.0",
+  "description": "Ari's Poetry Photobooth",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
