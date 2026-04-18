@@ -14,12 +14,12 @@ const photos = { 1: null, 2: null }; // ImageBitmap after loading
    _s = shifted up 15pp when poem is shown (not used for frame 3).     */
 const FRAMES = {
   1: {
-    // Dark red — additional 15% smaller (w = 14.8 * 0.85 = 12.6%)
-    w: 12.6,  // h = 22.41%
-    photos1:   [{ l: 43.7, t: 38.8 }],
-    photos2:   [{ l: 43.7, t: 27.6 }, { l: 43.7, t: 50.01 }],
-    photos1_s: [{ l: 43.7, t: 23.8 }],
-    photos2_s: [{ l: 43.7, t: 12.6 }, { l: 43.7, t: 35.01 }],
+    // Dark red — 15% smaller again (w = 12.6 * 0.85 = 10.71%)
+    w: 10.71,  // h = 19.05%
+    photos1:   [{ l: 44.6, t: 40.5 }],
+    photos2:   [{ l: 44.6, t: 30.5 }, { l: 44.6, t: 49.55 }],
+    photos1_s: [{ l: 44.6, t: 25.5 }],
+    photos2_s: [{ l: 44.6, t: 15.5 }, { l: 44.6, t: 34.55 }],
     poem_s: { l: 20, t: 62, w: 60, align: 'center' }
   },
   2: {
