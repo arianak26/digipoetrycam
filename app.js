@@ -14,25 +14,25 @@ const FRAMES = {
     w: 12.6,
     photos1: [{ l: 43.7 }],
     photos2: [{ l: 43.7 }, { l: 43.7 }],
-    poem: { l: 20, t: 60, w: 60, align: 'center' }
+    poem: { l: 20, t: 65, w: 60, align: 'center' }
   },
   2: {
     w: 11.1,
     photos1: [{ l: 44.45 }],
     photos2: [{ l: 44.45 }, { l: 44.45 }],
-    poem: { l: 18, t: 60, w: 64, align: 'center' }
+    poem: { l: 18, t: 62, w: 64, align: 'center' }
   },
   3: {
     w: 14.2,
     photos1: [{ l: 42.9 }],
     photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 60, w: 60, align: 'center' }
+    poem: { l: 20, t: 72, w: 60, align: 'center' }
   },
   4: {
     w: 14.2,
     photos1: [{ l: 42.9 }],
     photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 60, w: 60, align: 'center' }
+    poem: { l: 20, t: 72, w: 60, align: 'center' }
   }
 };
 
@@ -185,7 +185,7 @@ function shiftedPhotoTops(f, photoCount) {
   const layout = FRAMES[f];
   const hPct = layout.w * 1366 / 768;
   const gap = 6; // % padding between bottom of stack and top of poem
-  const topPad = 8; // % minimum distance from top of frame
+  const topPad = 13; // % minimum distance — keeps photos inside all frame borders
   const stackBottom = layout.poem.t - gap;
 
   if (photoCount >= 2) {
