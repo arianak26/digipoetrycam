@@ -184,7 +184,7 @@ function centeredPhotoTops(f, photoCount) {
 function shiftedPhotoTops(f, photoCount) {
   const layout = FRAMES[f];
   const hPct = layout.w * 1366 / 768;
-  const gap = 6;
+  const gap = 3;
   const topPad = layout.topPad;
   const stackBottom = layout.poem.t - gap;
 
