@@ -17,10 +17,10 @@ const FRAMES = {
     poem: { l: 20, t: 65, w: 60, align: 'center' }
   },
   2: {
-    w: 11.1, topPad: 13,
+    w: 11.1, topPad: 20,
     photos1: [{ l: 44.45 }],
     photos2: [{ l: 44.45 }, { l: 44.45 }],
-    poem: { l: 18, t: 62, w: 64, align: 'center' }
+    poem: { l: 18, t: 68, w: 64, align: 'center' }
   },
   3: {
     w: 14.2, topPad: 17,
