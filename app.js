@@ -20,19 +20,19 @@ const FRAMES = {
     w: 11.1, topPad: 20,
     photos1: [{ l: 44.45 }],
     photos2: [{ l: 44.45 }, { l: 44.45 }],
-    poem: { l: 18, t: 68, w: 64, align: 'center' }
+    poem: { l: 18, t: 64, w: 64, align: 'center' }
   },
   3: {
-    w: 14.2, topPad: 17,
-    photos1: [{ l: 42.9 }],
-    photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 76, w: 60, align: 'center' }
+    w: 12.5, topPad: 17,
+    photos1: [{ l: 43.75 }],
+    photos2: [{ l: 43.75 }, { l: 43.75 }],
+    poem: { l: 20, t: 67, w: 60, align: 'center' }
   },
   4: {
-    w: 14.2, topPad: 13,
-    photos1: [{ l: 42.9 }],
-    photos2: [{ l: 42.9 }, { l: 42.9 }],
-    poem: { l: 20, t: 72, w: 60, align: 'center' }
+    w: 12.5, topPad: 13,
+    photos1: [{ l: 43.75 }],
+    photos2: [{ l: 43.75 }, { l: 43.75 }],
+    poem: { l: 20, t: 62, w: 60, align: 'center' }
   }
 };
 
